@@ -1,0 +1,31 @@
+input {
+    width: 300px;
+    font-size: 13px;
+    padding: 6px 0 4px 10px;
+    border: 1px solid #cecece;
+    background: #F6F6f6;
+    border-radius: 8px;
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color: antiquewhite;
+
+    margin: 5px;
+}
+
+.control-wrapper {
+    display: flex;
+    align-items: center;
+    margin: '10px'
+}
+
+.autocomplete-wrapper {
+    position: "relative";
+    width: 300px;
+    margin: 10px;
+}
