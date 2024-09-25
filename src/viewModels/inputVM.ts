@@ -1,10 +1,10 @@
 import { makeAutoObservable } from "mobx";
 
 class InputViewModel {
-  text: string = ""; // Состояние текста
+  text: string = ""; 
 
   constructor() {
-    makeAutoObservable(this); // MobX автоматически следит за изменениями
+    makeAutoObservable(this); 
   }
 
   setText(newText: string) {

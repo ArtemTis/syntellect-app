@@ -1,67 +1,42 @@
-import { makeAutoObservable } from "mobx";
-import { CountryInfo, getCountryByName } from "../api/apiService";
-
+import { makeAutoObservable, runInAction } from "mobx";
+import { getCountryByName } from "../api/apiService"; // Имитация API
+import debounce from "../utils/debounce";
 
 class AutocompleteViewModel {
   inputText: string = "";
   suggestions: Array<{ name: string; fullName: string; flag: string }> = [];
   maxSuggestions: number;
+  fetchSuggestionsDebounced: (query: string) => void;
 
   constructor(maxSuggestions: number = 5) {
-    this.inputText = ""; // Явная инициализация строки
-    this.suggestions = []; // Явная инициализация массива
-    this.maxSuggestions = maxSuggestions; // Получение максимального количества подсказок
-    makeAutoObservable(this); // MobX автоматически отслеживает изменения в полях
+    this.inputText = "";
+    this.suggestions = [];
+    this.maxSuggestions = maxSuggestions;
+    this.fetchSuggestionsDebounced = debounce(this.fetchSuggestions.bind(this), 300);
+    makeAutoObservable(this);
   }
 
   setInputText(newText: string) {
     this.inputText = newText;
-    this.fetchSuggestions(newText);
+    this.fetchSuggestionsDebounced(newText);
   }
 
   async fetchSuggestions(query: string) {
     if (query.length > 0) {
-      const request = this.debounce<CountryInfo[]>(getCountryByName, 100);
-      const response = await request(query);
-
+      const response = await getCountryByName(query);
       this.suggestions = response.slice(0, this.maxSuggestions);
     } else {
       this.suggestions = [];
     }
   }
 
-  debounce<T>(callback: (...args: any[]) => Promise<T>, delay: number) {
-    let timer: any = null;
-
-    return (...args: any[]): Promise<T> => {
-      return new Promise((resolve, reject) => {
-        if (timer) {
-          clearTimeout(timer);
-        }
-
-        timer = setTimeout(async () => {
-          try {
-            const result = await callback(...args);
-            console.log(result);
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          }
-        }, delay);
-      });
-    };
-  }
-
-
   selectSuggestion(suggestion: string) {
     this.inputText = suggestion;
     this.suggestions = [];
   }
-
   clearSuggestions() {
     this.suggestions = [];
   }
 }
-
 
 export default AutocompleteViewModel;
