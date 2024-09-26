@@ -12,7 +12,7 @@ class AutocompleteViewModel {
     this.inputText = "";
     this.suggestions = [];
     this.maxSuggestions = maxSuggestions;
-    this.fetchSuggestionsDebounced = debounce(this.fetchSuggestions.bind(this), 300);
+    this.fetchSuggestionsDebounced = debounce(this.fetchSuggestions.bind(this), 500);
     makeAutoObservable(this);
   }
 
@@ -24,6 +24,7 @@ class AutocompleteViewModel {
   async fetchSuggestions(query: string) {
     if (query.length > 0) {
       const response = await getCountryByName(query);
+
       this.suggestions = response.slice(0, this.maxSuggestions);
     } else {
       this.suggestions = [];
